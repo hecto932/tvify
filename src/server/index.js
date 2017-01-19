@@ -1,39 +1,18 @@
-var http = require('http')
-var assets = require('./assets.js');
+var express = require('express')
+var app = express()
 
-var server = http.createServer(function(request, response) {
+// Middleware
+app.use(express.static('public'))
 
-	console.log('Recibi un request ' + request.url)
+// GET /votes
+app.get('/votes', function (req, res) {
+	res.json([])
+})
+// POST /vote/<id>
+app.post('/vote/:id', function (req, res) {
 
-	switch(request.url){
-		case '/':
-			assets.serveStatic('index.html', function(err, content) {
-				if(err) return console.log(err.message);
-
-				response.end(content)
-			})
-			break
-		case '/app.js':
-			assets.serveStatic('app.js', function(err, content) {
-				if(err) return console.log(err.message);
-
-				response.end(content)
-			})
-			break
-		case '/app.css':
-			assets.serveStatic('app.css', function(err, content) {
-				if(err) return console.log(err.message);
-
-				response.end(content)
-			})
-			break
-		default:
-			response.statusCode = 404
-			response.end('Not found')
-			break
-	}
 })
 
-server.listen(3000, function () {
-	console.log('Servidor iniciado. Escuchando en el puerto 3000')
+app.listen(3000, function () {
+	console.log('Servidor iniciado con Express en el puerto 3000')
 })
