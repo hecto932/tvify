@@ -12,15 +12,11 @@ import qs from 'qs'
 
 page('/', function (ctx, next) {
   $tvShowsContainer.find('.tv-show').remove()
-  if (!localStorage.shows) {
-    getShows(function (shows) {
-      $tvShowsContainer.find('.loader').remove();
-      localStorage.shows = JSON.stringify(shows);
-      renderShows(shows);
-    })
-  } else {
-    renderShows(JSON.parse(localStorage.shows));
-  }
+  getShows(function (shows) {
+    $tvShowsContainer.find('.loader').remove();
+    localStorage.shows = JSON.stringify(shows);
+    renderShows(shows);
+  })
 })
 
 page('/search', function (ctx, next) {

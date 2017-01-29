@@ -1,5 +1,8 @@
 import express from 'express'
 import api from 'src/server/api'
+import mongoose from 'mongoose'
+
+mongoose.connect('mongodb://localhost/tvify')
 
 const app = express()
 
