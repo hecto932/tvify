@@ -1,27 +1,22 @@
 import express from 'express'
-const app = express()
+import api from 'src/server/api'
 
-const votes = {} // object, dictionary, hashtable
+const app = express()
 
 // Middleware
 app.use(express.static('public'))
 
-// GET /votes
-app.get('/votes', (req, res)  => {
-	res.json(votes)
+app.use('/api/votes', (req, res, next) => {
+	console.log('Middleware 1')
+	next()
 })
-// POST /vote/<id>
-app.post('/vote/:id', (req, res) => {
-	let id = req.params.id
-	
-	if(votes[id] === undefined)
-		votes[id] = 1
-	else
-		votes[id] += 1
 
-	console.log({ votes : votes[id] })
-	res.json({ votes : votes[id] })
+app.use('/api/votes', (req, res, next) => {
+	console.log('Middleware 2')
+	next()
 })
+
+app.use('/api', api)
 
 app.listen(3000, () => {
 	console.log('Servidor iniciado con Express en el puerto 3000')
