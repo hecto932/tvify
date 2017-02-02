@@ -1,7 +1,17 @@
 import express from 'express'
-const router = express.Router()
-
+import tvmaze from 'tv-maze'
 import Vote from 'src/server/models'
+
+const router = express.Router()
+const client = tvmaze.createClient()
+
+router.get('/shows', (req, res) => {
+	client.shows((err, shows) => {
+		if(err) return res.sendStatus(500).json(err)
+
+		res.json(shows)
+	})
+})
 
 // GET /votes
 router.get('/votes', (req, res)  => {
