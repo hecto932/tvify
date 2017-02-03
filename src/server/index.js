@@ -37,8 +37,14 @@ io.on('connection', (socket) => {
 		})
 	})
 
+	socket.on('join', room => {
+		socket.room = room
+		socket.join(room)
+		//socket.leave(room)
+	})
+
 	socket.on('message', msg => {
-		socket.broadcast.emit('message', msg)
+		socket.broadcast.to(socket.room).emit('message', msg)
 	})
 })
 

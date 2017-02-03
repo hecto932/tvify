@@ -23,7 +23,8 @@ $tvShowsContainer.on('click', 'button.chat', function (ev) {
   let $this = $(this)
   let $article = $this.closest('.tv-show')
   let id = $article.data('id')
-
+  
+  socket.emit('join', 'show-' + id)
   page('/chat/' + id)
 })
 
@@ -64,6 +65,7 @@ socket.on('message', function (msg) {
 function addMessage(nick, message) {
   let $chatBody = $('.chat-body')
   $chatBody.append(`<p><b>${nick}:</b> ${message}</p>`)
+  $chatBody.animate({ scrollTop: $charBody.get(0).scrollHeight }, 1000)
 }
 
 export default $tvShowsContainer
