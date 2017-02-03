@@ -1,24 +1,12 @@
 import express from 'express'
 import tvmaze from 'tv-maze'
 import Vote from 'src/server/models'
+import { getVotes, incrementVote, addVotes } from 'src/server/lib'
 
 const router = express.Router()
 const client = tvmaze.createClient()
 
-function addVotes (shows, callbacks) {
-	Vote.find({}, (err, votes) => {
-		if (err) votes = []
-
-		shows = shows.map((show) => {
-			let vote = votes.filter(vote => vote.showId === show.id)[0]
-			show.count = vote ? vote.count : 0
-			return show
-		})
-
-		callbacks(shows)
-	})
-}
-
+// GET /api/shows
 router.get('/shows', (req, res) => {
 	client.shows((err, shows) => {
 		if(err) return res.sendStatus(500).json(err)
@@ -29,7 +17,7 @@ router.get('/shows', (req, res) => {
 	})
 })
 
-// GET /search
+// GET /api/search
 router.get('/search', (req, res) => {
 	let query = req.query.q
 
@@ -42,42 +30,25 @@ router.get('/search', (req, res) => {
 	})
 })
 
-// GET /votes
+// GET /api/votes
 router.get('/votes', (req, res)  => {
-	console.log('GET /votes')
-	Vote.find({}, (err, docs) => {
+	getVotes((err, docs) => {
 		if(err) return res.sendStatus(500).json(err)
 
 		res.json(docs)
 	})
 })
 
-// POST /vote/<id>
+// POST /api/vote/123
 router.post('/vote/:id', (req, res) => {
 	let id = req.params.id
 	
-	var onSave = function onSave(vote){
-		return (err, data) => {
-			if(err) return res.sendStatus(500).json(data)
-
-			res.json(vote)
+	incrementVote(id, (err, vote) => {
+		if (err) {
+			return res.sendStatus(500).json(err)
 		}
-	}
-
-
-	Vote.findOne({ showId : id }, (err, doc) => {
-		if(doc) {
-			doc.count+=1
-			doc.save(onSave(doc))
-		}else {
-			let vote = new Vote()
-			vote.showId = id
-			vote.count = 1
-			vote.save(onSave(vote))
-		}
+		res.json(vote)
 	})
-
-	
 })
 
 
