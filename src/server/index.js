@@ -5,11 +5,13 @@ import socketio from 'socket.io'
 import mongoose from 'mongoose'
 import { incrementVote } from 'src/server/lib'
 
-mongoose.connect('mongodb://localhost/tvify')
 
 const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
+const port = process.env.PORT || 3000
+
+mongoose.connect(process.env.MONGOPATH || 'mongodb://localhost/tvify')
 
 // Middleware
 app.use(express.static('public'))
@@ -48,6 +50,6 @@ io.on('connection', (socket) => {
 	})
 })
 
-server.listen(3000, () => {
-	console.log('Servidor iniciado con Express en el puerto 3000')
+server.listen(port, () => {
+	console.log(`Servidor iniciado con Express en el puerto ${port}`)
 })
